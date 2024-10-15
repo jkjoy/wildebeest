@@ -54,7 +54,7 @@ jobs:
 
       - name: Configure Cloudflare Images variants
         run: |
-          curl -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
+          curl --retry 3 --retry-delay 2 -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
               -d '{
                   "id": "avatar",
                   "options": {
@@ -65,7 +65,7 @@ jobs:
               }' \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}'
 
-          curl -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
+          curl --retry 3 --retry-delay 2 -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
               -d '{
                   "id": "header",
                   "options": {
@@ -76,7 +76,7 @@ jobs:
               }' \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}'
 
-          curl -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
+          curl --retry 3 --retry-delay 2 -XPOST https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/images/v1/variants \
               -d '{
                   "id": "usercontent",
                   "options": {
@@ -120,7 +120,7 @@ jobs:
 
       - name: retrieve Zero Trust organization
         run: |
-          auth_domain=$(curl https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/access/organizations \
+          auth_domain=$(curl --retry 3 --retry-delay 2 https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/access/organizations \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}' | jq -r '.result.auth_domain')
           printf "auth_domain=$auth_domain" >> $GITHUB_ENV
 
@@ -187,7 +187,7 @@ jobs:
 
       - name: Retrieve DO namespace
         run: |
-          curl https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/durable_objects/namespaces \
+          curl --retry 3 --retry-delay 2 https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/workers/durable_objects/namespaces \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}' \
               | jq -r '.result[] | select( .script == "wildebeest-do" ) | .id' | awk '{print "do_cache_id="$1}' >> $GITHUB_ENV
 
@@ -282,7 +282,7 @@ jobs:
 
       - name: add Queue producer to Pages
         run: |
-          curl https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/pages/projects/wildebeest-${{ env.NAME_SUFFIX }} \
+          curl --retry 3 --retry-delay 2 https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/pages/projects/wildebeest-${{ env.NAME_SUFFIX }} \
               -XPATCH \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}' \
               -d  '{
