@@ -122,7 +122,7 @@ jobs:
           
       - name: Generate wrangler.toml
         run: |
-          echo -e "[d1_databases]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" >> wrangler.toml
+          echo -e "[d1_databases]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" > wrangler.toml
 
       - name: Migrate D1 database
         uses: cloudflare/wrangler-action@v3.9.0
@@ -131,7 +131,7 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-
+          
       - name: retrieve Zero Trust organization
         run: |
           auth_domain=$(curl https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/access/organizations \
