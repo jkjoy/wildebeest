@@ -60,7 +60,7 @@ jobs:
                   }
               }' \
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}'
-
+ 
       - name: Create D1 database
         uses: cloudflare/wrangler-action@2.0.0
         with:
@@ -91,7 +91,6 @@ jobs:
             echo "******"
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
- 
       - name: retrieve Zero Trust organization
         run: |
           auth_domain=$(curl --retry 3 --retry-delay 2 https://api.cloudflare.com/client/v4/accounts/${{ secrets.CF_ACCOUNT_ID }}/access/organizations \
