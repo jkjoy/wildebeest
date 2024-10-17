@@ -120,22 +120,15 @@ jobs:
         env:
           D1_LIST_OUTPUT: ${{ steps.retrieve-d1-database.outputs.stdout }}
           
-      - name: Generate wrangler.toml
-        run: |
-          # 检查 wrangler.toml 文件是否存在 d1_databases 部分
-          if grep -q '\[d1_databases\]' wrangler.toml; then
-            # 如果存在，使用 sed 更新 d1_databases 部分
-            sed -i "/\[d1_databases\]/,/^\[/{s/\(database_name = \).*/\1\"wildebeest-${{ env.NAME_SUFFIX }}\"/; s/\(database_id = \).*/\1\"${{ env.d1_id }}\"/}" wrangler.toml
-          else
-            # 如果不存在，追加 d1_databases 部分
-            echo -e "[[d1_databases]]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" >> wrangler.toml
-          fi
-
       - name: Migrate D1 database
         uses: cloudflare/wrangler-action@v3.9.0
         with:
           command: d1 migrations apply wildebeest-${{ env.NAME_SUFFIX }}
           apiToken: ${{ secrets.CF_API_TOKEN }}
+          preCommands: |
+            echo "*** pre commands ***"
+            echo -e "[d1_databases]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" >> wrangler.toml
+            echo "******"
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           
