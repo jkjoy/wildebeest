@@ -122,7 +122,7 @@ jobs:
           
       - name: Generate wrangler.toml
         run: |
-          echo -e "[d1_databases]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" > wrangler.toml
+          echo -e "[[d1_databases]]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" > wrangler.toml
 
       - name: Migrate D1 database
         uses: cloudflare/wrangler-action@v3.9.0
