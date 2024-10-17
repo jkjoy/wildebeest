@@ -94,18 +94,32 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
-      - name: retrieve D1 database
+#      - name: retrieve D1 database
+ #       uses: cloudflare/wrangler-action@v3.9.0
+#        with:
+ #         command: d1 list --json | jq -r '.[] | select(.name == "wildebeest-${{ env.NAME_SUFFIX }}") | .uuid' | awk '{print "d1_id="$1}' >> $GITHUB_ENV
+ #         apiToken: ${{ secrets.CF_API_TOKEN }}
+ #         preCommands: |
+  #          echo "*** pre commands ***"
+  #          sudo apt-get update && sudo apt-get -y install jq
+   #         echo "******"
+  #      env:
+   #       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Retrieve D1 database
         uses: cloudflare/wrangler-action@v3.9.0
         with:
-          command: d1 list --json | jq -r '.[] | select(.name == "wildebeest-${{ env.NAME_SUFFIX }}") | .uuid' | awk '{print "d1_id="$1}' >> $GITHUB_ENV
+          command: d1 list --json
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          preCommands: |
-            echo "*** pre commands ***"
-            sudo apt-get update && sudo apt-get -y install jq
-            echo "******"
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
+      - name: Process JSON output
+        run: |
+          d1_id=$(echo "$D1_LIST_OUTPUT" | jq -r '.[] | select(.name == "wildebeest-${{ env.NAME_SUFFIX }}") | .uuid')
+          echo "d1_id=$d1_id" >> $GITHUB_ENV
+        env:
+          D1_LIST_OUTPUT: ${{ steps.retrieve-d1-database.outputs.stdout }}
+          
       - name: migrate D1 database
         uses: cloudflare/wrangler-action@v3.9.0
         with:
