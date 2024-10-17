@@ -50,7 +50,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Configure Cloudflare Images variants
         run: |
@@ -86,7 +86,7 @@ jobs:
               -H 'Authorization: Bearer ${{ secrets.CF_API_TOKEN }}'
 
       - name: Create D1 database
-        uses: cloudflare/wrangler-action@2.0.0
+        uses: cloudflare/wrangler-action@3.9.0
         with:
           command: d1 create wildebeest-${{ env.NAME_SUFFIX }}
           apiToken: ${{ secrets.CF_API_TOKEN }}
