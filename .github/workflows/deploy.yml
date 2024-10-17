@@ -120,14 +120,14 @@ jobs:
         env:
           D1_LIST_OUTPUT: ${{ steps.retrieve-d1-database.outputs.stdout }}
           
-      - name: migrate D1 database
+      - name: Migrate D1 database
         uses: cloudflare/wrangler-action@v3.9.0
         with:
           command: d1 migrations apply wildebeest-${{ env.NAME_SUFFIX }}
           apiToken: ${{ secrets.CF_API_TOKEN }}
           preCommands: |
             echo "*** pre commands ***"
-            echo -e "[[d1_databases]]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" >> wrangler.toml
+            echo -e "[d1_databases]\nbinding=\"DATABASE\"\ndatabase_name=\"wildebeest-${{ env.NAME_SUFFIX }}\"\ndatabase_id=\"${{ env.d1_id }}\"" >> wrangler.toml
             echo "******"
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
